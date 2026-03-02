@@ -1,37 +1,150 @@
-<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Title:</strong>
-  <%= @article.title %>
-</p>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #fafbfc;
+    margin: 0;
+    padding: 0;
+  }
+  .article-container {
+    max-width: 600px;
+    margin: 40px auto 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 32px 32px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    transition: box-shadow 0.2s;
+  }
+  .article-container:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  .word-count {
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 18px;
+    font-size: 1.1em;
+    text-align: right;
+  }
+  .article-info strong {
+    color: #333;
+    font-size: 1.08em;
+    letter-spacing: 0.5px;
+  }
+  .article-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .article-actions {
+    margin: 18px 0 0 0;
+    text-align: right;
+    font-size: 1.05em;
+    color: #555;
+  }
+  .comments-section {
+    margin-top: 36px;
+    background: #f6f8fa;
+    border-radius: 8px;
+    padding: 24px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .comments-section h2 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #007bff;
+    letter-spacing: 0.5px;
+  }
+  .comments-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 18px;
+  }
+  .comments-list li {
+    background: #fff;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    color: #444;
+    transition: box-shadow 0.2s, background 0.2s;
+  }
+  .comments-list li:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    background: #e9ecef;
+  }
+  .comment-form label {
+    font-weight: 500;
+    color: #333;
+  }
+  .comment-form textarea {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 1em;
+    resize: vertical;
+    transition: border 0.2s;
+  }
+  .comment-form textarea:focus {
+    border: 1.5px solid #007bff;
+  }
+  .comment-form input[type="submit"] {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .comment-form input[type="submit"]:hover {
+    background: #0056b3;
+  }
+</style>
 
-<p>
-  <strong>Body:</strong>
-  <%= @article.body %>
-</p>
-
-<p>
-  <strong>Premium content:</strong>
-  <%= @article.premium_content %>
-</p>
-
-<%= link_to 'Edit', edit_article_path(@article) %> |
-<%= link_to 'Back', articles_path %>
-
-<h2>Comments</h2>
-<ul>
-  <% @article.comments.each do |comment| %>
-    <li><%= comment.body %></li>
-  <% end %>
-</ul>
-
-<h3>Add a comment</h3>
-<%= form_with(model: [@article, @article.comments.build], local: true) do |form| %>
-  <div>
-    <%= form.label :body, "Comment" %><br>
-    <%= form.text_area :body %>
+<div class="article-container">
+  <div class="word-count" id="word-count"></div>
+  <div class="article-info">
+    <p><strong>Title:</strong> <%= @article.title %></p>
+    <p><strong>Body:</strong> <%= @article.body %></p>
+    <p><strong>Premium content:</strong> <%= @article.premium_content %></p>
   </div>
-  <div>
-    <%= form.submit "Post Comment" %>
+  <div class="article-actions">
+    <%= link_to 'Edit', edit_article_path(@article) %> |
+    <%= link_to 'Back', articles_path %>
   </div>
-<% end %>
+  <div class="comments-section">
+    <h2>Comments</h2>
+    <ul class="comments-list">
+      <% @article.comments.each do |comment| %>
+        <li><%= comment.body %></li>
+      <% end %>
+    </ul>
+    <h3>Add a comment</h3>
+    <%= form_with(model: [@article, @article.comments.build], local: true, html: { class: 'comment-form' }) do |form| %>
+      <div>
+        <%= form.label :body, "Comment" %><br>
+        <%= form.text_area :body %>
+      </div>
+      <div>
+        <%= form.submit "Post Comment" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var bodyText = `<%= j @article.body %>`;
+    var wordCount = bodyText.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('word-count').textContent = 'Word Count: ' + wordCount;
+  });
+</script>
