@@ -86,9 +86,12 @@
 
 <div class="articles-list">
   <% @articles.each do |article| %>
-    <div class="article-card">
+    <div class="article-card<%= ' premium' if article.premium_content %>">
       <div class="article-title">
         <%= article.title %>
+        <% if article.premium_content %>
+          <span class="premium-label">Premium Member Only</span>
+        <% end %>
       </div>
       <div class="article-body"><%= article.body %></div>
       <div class="article-actions">
